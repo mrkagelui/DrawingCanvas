@@ -1,15 +1,15 @@
 package org.mrkagelui.drawingcanvas;
 
 public class CanvasManager {
-    public char[][] getCanvas() {
-        return canvas;
-    }
 
-    public byte[][] getPixelTypes() {
-        return pixelTypes;
-    }
+    private Pixel[][] pixels;
 
-    public char getLine() {
+    private String command;
+    private final char Line = 'x';
+    private final char BoundaryHorizontal = '-';
+    private final char BoundaryVertical = '|';
+
+    public char getLineChar() {
         return Line;
     }
 
@@ -21,18 +21,21 @@ public class CanvasManager {
         return BoundaryVertical;
     }
 
-    private char[][] canvas;
-    private byte[][] pixelTypes;
+    public Pixel getPixelAt(int x, int y) {
+        int realX = x - 1;
+        int realY = y - 1;
+        try {
+            return pixels[realX][realY];
+        }
+        catch (ArrayIndexOutOfBoundsException e) {
+            return null;
+        }
+    }
 
     public CanvasManager setCommand(String command) {
         this.command = command;
         return this;
     }
-
-    private String command;
-    private final char Line = 'x';
-    private final char BoundaryHorizontal = '-';
-    private final char BoundaryVertical = '|';
 
     public void update() {
 
