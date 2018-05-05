@@ -11,20 +11,20 @@ class CanvasManagerTest {
     @BeforeEach
     void clearCanvasData() {
         cm = new CanvasManager();
-        cm.setCommand("c 14 5").update();
+        cm.setCommand("c 14 9").update();
         cm.clear();
     }
 
     @Test
     void testNewCanvas() {
-        assertNotNull(cm.getPixelAt(14, 5),
+        assertNotNull(cm.getPixelAt(14, 9),
                 "Graphic data should be created at max width and height");
 
         cm.setCommand("C 9 15").update();
         assertNotNull(cm.getPixelAt(9, 15),
                 "After recreation, graphic should be created at new max");
-        assertNull(cm.getPixelAt(14, 5),
-                "After recreation, graphic not have old data");
+        assertNull(cm.getPixelAt(14, 9),
+                "After recreation, graphic should not have old data");
     }
 
     @Test
@@ -33,7 +33,7 @@ class CanvasManagerTest {
         assertNotEquals(cm.getLineChar(), cm.getPixelAt(1, 3).getPixelChar(),
                 "Line should not be drawn if not straight");
 
-        cm.setCommand("L 1 3 1 6").update();
+        cm.setCommand("L 1 3 1 100").update();
         assertNotEquals(cm.getLineChar(), cm.getPixelAt(1, 4).getPixelChar(),
                 "Line should not be drawn if index out of bound");
 
@@ -56,6 +56,27 @@ class CanvasManagerTest {
 
     @Test
     void testDrawRectangle() {
+        cm.setCommand("R 2 3 9 7").update();
+        assertEquals(cm.getLineChar(), cm.getPixelAt(9, 6).getPixelChar(),
+                "Line should be drawn at the side of rectangle");
+        assertNotEquals(cm.getLineChar(), cm.getPixelAt(5, 4).getPixelChar(),
+                "Line should not be drawn inside the rectangle");
+
+        cm.setCommand("R 1 2 1 2").update();
+        assertEquals(cm.getLineChar(), cm.getPixelAt(1, 2).getPixelChar(),
+                "Dot should be supported for rectangle");
+
+        cm.setCommand("R 2 3 5 5").update();
+        assertEquals(cm.getLineChar(), cm.getPixelAt(5, 3).getPixelChar(),
+                "Line should be drawn if one rectangle is contained in another");
+        assertNotEquals(cm.getLineChar(), cm.getPixelAt(4, 4).getPixelChar(),
+                "Line should not be drawn inside the inner rectangle");
+
+        cm.setCommand("R 6 4 13 9").update();
+        assertEquals(cm.getLineChar(), cm.getPixelAt(9, 4).getPixelChar(),
+                "Line should be drawn if two rectangles overlap");
+        assertNotEquals(cm.getLineChar(), cm.getPixelAt(10, 5).getPixelChar(),
+                "Line should not be drawn in the overlapping area");
     }
 
     @Test

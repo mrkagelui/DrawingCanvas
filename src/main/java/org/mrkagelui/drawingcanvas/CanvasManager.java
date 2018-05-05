@@ -36,16 +36,16 @@ public class CanvasManager {
 
     public void update() {
         if (null == command) return;
-        char commandChar = Character.toUpperCase(command.charAt(0));
+        char commandChar = Character.toUpperCase(commandSplits[0].charAt(0));
         switch (commandChar) {
             case 'C':
                 newCanvas();
                 break;
             case 'L':
-                drawLine();
+                drawLine(x, y, secondX, secondY);
                 break;
             case 'R':
-                drawRectangle();
+                drawRectangle(x, y, secondX, secondY);
                 break;
             case 'B':
                 fill();
@@ -53,6 +53,8 @@ public class CanvasManager {
             default:
                 break;
         }
+
+        cleanUpCommand();
     }
 
     private void newCanvas() {
@@ -64,10 +66,9 @@ public class CanvasManager {
         }
     }
 
-    private void drawLine() {
+    private void drawLine(int x, int y, int secondX, int secondY) {
         // straight lines only
         if (x != secondX && y != secondY) {
-            cleanUpCommand();
             return;
         }
 
@@ -87,8 +88,15 @@ public class CanvasManager {
         }
     }
 
-    private void drawRectangle() {
+    private void drawRectangle(int x, int y, int secondX, int secondY) {
+        if (x > secondX || y > secondY) {
+            return;
+        }
 
+        drawLine(x, y, secondX, y);
+        drawLine(secondX, y, secondX, secondY);
+        drawLine(secondX, secondY, x, secondY);
+        drawLine(x, secondY, x, y);
     }
 
     private void fill() {
