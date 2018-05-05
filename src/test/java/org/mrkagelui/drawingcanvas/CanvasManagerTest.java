@@ -1,6 +1,5 @@
 package org.mrkagelui.drawingcanvas;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,23 +7,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CanvasManagerTest {
     private CanvasManager cm;
-    @BeforeAll
-    void createCanvasManager() {
-        cm = new CanvasManager();
-    }
 
     @BeforeEach
     void clearCanvasData() {
+        cm = new CanvasManager();
+        cm.setCommand("c 14 5").update();
         cm.clear();
     }
 
     @Test
     void testNewCanvas() {
-        cm.setCommand("c 14 5");
         assertNotNull(cm.getPixelAt(14, 5),
                 "Graphic data should be created at max width and height");
 
-        cm.setCommand("C 9 15");
+        cm.setCommand("C 9 15").update();
         assertNotNull(cm.getPixelAt(9, 15),
                 "After recreation, graphic should be created at new max");
         assertNull(cm.getPixelAt(14, 5),
@@ -33,7 +29,6 @@ class CanvasManagerTest {
 
     @Test
     void testDrawLine() {
-        cm.setCommand("C 14 5").update();
         cm.setCommand("L 1 3 2 4").update();
         assertNotEquals(cm.getLineChar(), cm.getPixelAt(1, 3).getPixelChar(),
                 "Line should not be drawn if not straight");
@@ -54,6 +49,9 @@ class CanvasManagerTest {
         cm.setCommand("L 3 5 3 3").update();
         assertEquals(cm.getLineChar(), cm.getPixelAt(3, 4).getPixelChar(),
                 "Line should be drawn upward");
+        cm.setCommand("L 6 1 6 1").update();
+        assertEquals(cm.getLineChar(), cm.getPixelAt(6, 1).getPixelChar(),
+                "Dot should be supported");
     }
 
     @Test
