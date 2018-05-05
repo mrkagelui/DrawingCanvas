@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="DrawingCanvas" target="9" />
+      <module name="DrawingCanvas" target="1.9" />
     </bytecodeTargetLevel>
   </component>
 </project>
