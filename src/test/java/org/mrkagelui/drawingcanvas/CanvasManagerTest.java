@@ -75,12 +75,77 @@ class CanvasManagerTest {
         cm.setCommand("R 6 4 13 9").update();
         assertEquals(cm.getLineChar(), cm.getPixelAt(9, 4).getPixelChar(),
                 "Line should be drawn if two rectangles overlap");
-        assertNotEquals(cm.getLineChar(), cm.getPixelAt(10, 5).getPixelChar(),
+        assertNotEquals(cm.getLineChar(), cm.getPixelAt(7, 5).getPixelChar(),
                 "Line should not be drawn in the overlapping area");
     }
 
     @Test
-    void testFill() {
+    void testFillWhenClickInRectangle() {
+        cm.setCommand("R 2 3 9 7").update();
+        cm.setCommand("B 3 4 c").update();
+        assertEquals('c', cm.getPixelAt(6, 4).getPixelChar());
+        assertNotEquals('c', cm.getPixelAt(10, 8).getPixelChar());
+    }
 
+    @Test
+    void testFillInCaseOfHalfOpenSpace() {
+        cm.setCommand("L 2 4 10 4").update();
+        cm.setCommand("L 7 1 7 5").update();
+        cm.setCommand("L 10 2 2 2").update();
+        cm.setCommand("L 10 1 10 5").update();
+        cm.setCommand("B 3 4 u").update();
+        assertEquals('u', cm.getPixelAt(7, 9).getPixelChar());
+        assertNotEquals('u', cm.getPixelAt(8, 4).getPixelChar());
+    }
+
+    @Test
+    void testFillInOverlappingRectangle() {
+        cm.setCommand("R 2 3 9 7").update();
+        cm.setCommand("R 6 4 13 9").update();
+
+        cm.setCommand("B 7 5 i").update();
+        assertEquals('i', cm.getPixelAt(8, 6).getPixelChar());
+        assertNotEquals('i', cm.getPixelAt(4, 4).getPixelChar(),
+                "Should not be filled since in a different enclosure");
+        assertNotEquals('i', cm.getPixelAt(10, 2).getPixelChar(),
+                "Should not be filled since out of rectangles");
+    }
+
+    @Test
+    void testFillOutOfOverlappingRectangle() {
+        cm.setCommand("R 2 3 9 7").update();
+        cm.setCommand("R 6 4 13 9").update();
+
+        cm.setCommand("B 10 2 p").update();
+        assertEquals('p', cm.getPixelAt(4, 8).getPixelChar());
+        assertNotEquals('p', cm.getPixelAt(8, 6).getPixelChar(),
+                "Should not be filled since in overlapping area");
+        assertNotEquals('p', cm.getPixelAt(4, 4).getPixelChar(),
+                "Should not be filled since in one of rectangles");
+    }
+
+    @Test
+    void testFillTwiceInEmptySpace() {
+        cm.setCommand("B 10 2 a").update();
+        cm.setCommand("B 10 2 b").update();
+        assertEquals('b', cm.getPixelAt(7, 9).getPixelChar());
+        assertNotEquals('a', cm.getPixelAt(8, 6).getPixelChar(),
+                "Should have been overwritten");
+    }
+
+    @Test
+    void testFillTwiceInDifferentEnclosure() {
+        cm.setCommand("R 2 3 9 7").update();
+        cm.setCommand("R 6 4 13 9").update();
+
+        cm.setCommand("B 10 2 m").update();
+        cm.setCommand("B 7 5 n").update();
+        assertEquals('m', cm.getPixelAt(4, 8).getPixelChar());
+        assertEquals('n', cm.getPixelAt(8, 6).getPixelChar());
+
+        assertTrue('m' != cm.getPixelAt(4, 4).getPixelChar()
+                && 'n' != cm.getPixelAt(4, 4).getPixelChar());
+        assertTrue('m' != cm.getPixelAt(4, 4).getPixelChar()
+                && 'n' != cm.getPixelAt(9, 8).getPixelChar());
     }
 }

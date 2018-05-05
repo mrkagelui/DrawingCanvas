@@ -48,7 +48,7 @@ public class CanvasManager {
                 drawRectangle(x, y, secondX, secondY);
                 break;
             case 'B':
-                fill();
+                fill(x, y, commandSplits[3].charAt(0));
                 break;
             default:
                 break;
@@ -99,7 +99,7 @@ public class CanvasManager {
         drawLine(x, secondY, x, y);
     }
 
-    private void fill() {
+    private void fill(int x, int y, char color) {
 
     }
 
