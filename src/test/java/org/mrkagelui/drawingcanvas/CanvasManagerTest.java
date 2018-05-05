@@ -42,10 +42,10 @@ class CanvasManagerTest {
                 "Line should be drawn from left to right");
         cm.setCommand("L 7 1 7 5").update();
         assertEquals(cm.getLineChar(), cm.getPixelAt(7, 4).getPixelChar(),
-                "Should be able to draw line downward, must not negate any intersection");
+                "Should be able to show line downward, must not negate any intersection");
         cm.setCommand("L 8 2 2 2").update();
         assertEquals(cm.getLineChar(), cm.getPixelAt(7, 2).getPixelChar(),
-                "Should be able to draw line from right to left");
+                "Should be able to show line from right to left");
         cm.setCommand("L 3 5 3 3").update();
         assertEquals(cm.getLineChar(), cm.getPixelAt(3, 4).getPixelChar(),
                 "Line should be drawn upward");

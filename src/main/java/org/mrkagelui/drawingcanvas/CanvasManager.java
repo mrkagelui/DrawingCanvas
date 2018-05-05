@@ -1,5 +1,7 @@
 package org.mrkagelui.drawingcanvas;
 
+import java.io.PrintStream;
+
 public class CanvasManager {
 
     private Pixel[][] pixels;
@@ -93,18 +95,6 @@ public class CanvasManager {
 
     }
 
-    public void draw() {
-        drawHorizontalBoundary();
-        for (int i = 0; i < pixels.length; i++) {
-            drawVerticalBoundary();
-            for (int j = 0; j < pixels[i].length; j++) {
-                drawPixel(i, j);
-            }
-            drawVerticalBoundary();
-        }
-        drawHorizontalBoundary();
-    }
-
     public void clear() {
         if (null == pixels) return;
         for (int i = 0; i < pixels.length; i++) {
@@ -114,20 +104,38 @@ public class CanvasManager {
         }
     }
 
-    private void drawHorizontalBoundary() {
+    public void show(PrintStream p) {
+        if (null == pixels) return;
+        printHorizontalBoundary(p);
+        for (int i = 0; i < pixels.length; i++) {
+            printOneLine(i, p);
+        }
+        printHorizontalBoundary(p);
+    }
+
+    private void printHorizontalBoundary(PrintStream p) {
         if (null == pixels) return;
         for (int i = 0; i < pixels[0].length + 2; i++) {
-            System.out.print(BoundaryHorizontal);
+            p.print(BoundaryHorizontal);
         }
-        System.out.println();
+        p.println();
     }
 
-    private void drawVerticalBoundary() {
-        System.out.print(BoundaryVertical);
+    private void printOneLine(int y, PrintStream p) {
+        printVerticalBoundary(p);
+        for (int j = 0; j < pixels[y].length; j++) {
+            printPixel(y, j, p);
+        }
+        printVerticalBoundary(p);
+        p.println();
     }
 
-    private void drawPixel(int i, int j) {
-        System.out.print(pixels[i][j]);
+    private void printVerticalBoundary(PrintStream p) {
+        p.print(BoundaryVertical);
+    }
+
+    private void printPixel(int i, int j, PrintStream p) {
+        p.print(pixels[i][j]);
     }
 
     private void sanityCheck() {
@@ -135,51 +143,56 @@ public class CanvasManager {
         commandSplits = command.split("\\s");
         boolean valid = true;
 
-        char commandChar = Character.toUpperCase(commandSplits[0].charAt(0));
-        switch (commandChar) {
-            case 'C':
-                if (commandSplits.length < 3 || !commandSplits[1].matches("\\d+")
-                        || !commandSplits[2].matches("\\d+"))
-                    valid = false;
-                else {
-                    x = Integer.parseInt(commandSplits[1]);
-                    y = Integer.parseInt(commandSplits[2]);
-                }
-                break;
-            case 'L':
-            case 'R':
-                if (null == pixels || commandSplits.length < 5
-                        || !commandSplits[1].matches("\\d+")
-                        || !commandSplits[2].matches("\\d+")
-                        || !commandSplits[3].matches("\\d+")
-                        || !commandSplits[4].matches("\\d+"))
-                    valid = false;
-                else {
-                    x = Integer.parseInt(commandSplits[1]) - 1;
-                    y = Integer.parseInt(commandSplits[2]) - 1;
-                    secondX = Integer.parseInt(commandSplits[3]) - 1;
-                    secondY = Integer.parseInt(commandSplits[4]) - 1;
-                    if (!areValidCoordinates(x, y) || !areValidCoordinates(secondX, secondY)) {
+        if (0 == commandSplits.length || commandSplits[0].length() < 1) {
+            valid = false;
+        }
+        else {
+            char commandChar = Character.toUpperCase(commandSplits[0].charAt(0));
+            switch (commandChar) {
+                case 'C':
+                    if (commandSplits.length < 3 || !commandSplits[1].matches("\\d+")
+                            || !commandSplits[2].matches("\\d+"))
                         valid = false;
+                    else {
+                        x = Integer.parseInt(commandSplits[1]);
+                        y = Integer.parseInt(commandSplits[2]);
                     }
-                }
-                break;
-            case 'B':
-                if (null == pixels || commandSplits.length < 4
-                        || !commandSplits[1].matches("\\d+")
-                        || !commandSplits[2].matches("\\d+")
-                        || commandSplits[3].length() != 1)
-                    valid = false;
-                else {
-                    x = Integer.parseInt(commandSplits[1]) - 1;
-                    y = Integer.parseInt(commandSplits[2]) - 1;
-                    if (!areValidCoordinates(x, y)) {
+                    break;
+                case 'L':
+                case 'R':
+                    if (null == pixels || commandSplits.length < 5
+                            || !commandSplits[1].matches("\\d+")
+                            || !commandSplits[2].matches("\\d+")
+                            || !commandSplits[3].matches("\\d+")
+                            || !commandSplits[4].matches("\\d+"))
                         valid = false;
+                    else {
+                        x = Integer.parseInt(commandSplits[1]) - 1;
+                        y = Integer.parseInt(commandSplits[2]) - 1;
+                        secondX = Integer.parseInt(commandSplits[3]) - 1;
+                        secondY = Integer.parseInt(commandSplits[4]) - 1;
+                        if (!areValidCoordinates(x, y) || !areValidCoordinates(secondX, secondY)) {
+                            valid = false;
+                        }
                     }
-                }
-                break;
-            default:
-                break;
+                    break;
+                case 'B':
+                    if (null == pixels || commandSplits.length < 4
+                            || !commandSplits[1].matches("\\d+")
+                            || !commandSplits[2].matches("\\d+")
+                            || commandSplits[3].length() != 1)
+                        valid = false;
+                    else {
+                        x = Integer.parseInt(commandSplits[1]) - 1;
+                        y = Integer.parseInt(commandSplits[2]) - 1;
+                        if (!areValidCoordinates(x, y)) {
+                            valid = false;
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         if (!valid) {
