@@ -12,6 +12,7 @@ public class CanvasManager {
     private final char BoundaryHorizontal = '-';
     private final char BoundaryVertical = '|';
     private int x, y, secondX, secondY;
+    private boolean[][] visited;
 
     public char getLineChar() {
         return Line;
@@ -100,7 +101,19 @@ public class CanvasManager {
     }
 
     private void fill(int x, int y, char color) {
+        visited = new boolean[pixels.length][pixels[0].length];
+        fillRecursive(x, y, color);
+    }
 
+    private void fillRecursive(int x, int y, char color) {
+        if (!areValidCoordinates(x, y) || visited[y][x] || pixels[y][x].isAtLine()) return;
+        pixels[y][x].drawColor(color);
+        visited[y][x] = true;
+
+        fillRecursive(x - 1, y, color);
+        fillRecursive(x, y - 1, color);
+        fillRecursive(x + 1, y, color);
+        fillRecursive(x, y + 1, color);
     }
 
     public void clear() {
@@ -215,6 +228,7 @@ public class CanvasManager {
         y = 0;
         secondX = 0;
         secondY = 0;
+        visited = null;
     }
 
     private boolean areValidCoordinates(int x, int y) {

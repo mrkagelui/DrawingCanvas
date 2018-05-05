@@ -1,6 +1,10 @@
 package org.mrkagelui.drawingcanvas;
 
 public class Pixel {
+    public boolean isAtLine() {
+        return isAtLine;
+    }
+
     private boolean isAtLine;
 
     private char pixelChar;

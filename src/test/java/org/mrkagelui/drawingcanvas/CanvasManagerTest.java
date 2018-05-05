@@ -57,7 +57,9 @@ class CanvasManagerTest {
     @Test
     void testDrawRectangle() {
         cm.setCommand("R 2 3 9 7").update();
-        assertEquals(cm.getLineChar(), cm.getPixelAt(9, 6).getPixelChar(),
+        assertEquals(cm.getLineChar(), cm.getPixelAt(2, 6).getPixelChar(),
+                "Line should be drawn at the side of rectangle");
+        assertEquals(cm.getLineChar(), cm.getPixelAt(9, 7).getPixelChar(),
                 "Line should be drawn at the side of rectangle");
         assertNotEquals(cm.getLineChar(), cm.getPixelAt(5, 4).getPixelChar(),
                 "Line should not be drawn inside the rectangle");
@@ -100,7 +102,7 @@ class CanvasManagerTest {
         cm.setCommand("L 7 1 7 5").update();
         cm.setCommand("L 10 2 2 2").update();
         cm.setCommand("L 10 1 10 5").update();
-        cm.setCommand("B 3 4 u").update();
+        cm.setCommand("B 3 3 u").update();
         assertEquals('u', cm.getPixelAt(7, 9).getPixelChar());
         assertNotEquals('u', cm.getPixelAt(8, 4).getPixelChar());
     }
