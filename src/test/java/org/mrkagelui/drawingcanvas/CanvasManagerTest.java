@@ -88,6 +88,13 @@ class CanvasManagerTest {
     }
 
     @Test
+    void testFillWhenClickAtLine() {
+        cm.setCommand("L 9 3 9 7").update();
+        cm.setCommand("B 9 5 v").update();
+        assertNotEquals('v', cm.getPixelAt(10, 8).getPixelChar());
+    }
+
+    @Test
     void testFillInCaseOfHalfOpenSpace() {
         cm.setCommand("L 2 4 10 4").update();
         cm.setCommand("L 7 1 7 5").update();
